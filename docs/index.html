@@ -189,7 +189,7 @@ td{padding:8px 12px;border-bottom:1px solid rgba(30,41,59,.5)}
   <h1>From AI Agents<br><span class="gradient">to AI Systems</span></h1>
   <p>The STC Framework separates execution, optimization, and governance into three distinct AI personas with a declarative specification and infrastructure enforcement layer — production-grade agent architecture for regulated enterprises.</p>
   <div class="stats">
-    <div class="stat"><strong>22</strong><small>Python Modules</small></div>
+    <div class="stat"><strong>23</strong><small>Python Modules</small></div>
     <div class="stat"><strong>7</strong><small>Documents (~1 MB)</small></div>
     <div class="stat"><strong>14</strong><small>Open-Source Tools</small></div>
     <div class="stat"><strong>AIUC-1</strong><small>All 6 Domains</small></div>
@@ -292,7 +292,7 @@ td{padding:8px 12px;border-bottom:1px solid rgba(30,41,59,.5)}
 
 <!-- CODE MODULES -->
 <div class="section" id="modules">
-  <div class="stitle"><h2>Code Modules</h2><p>22 production-tested Python modules across 6 packages</p></div>
+  <div class="stitle"><h2>Code Modules</h2><p>23 production-tested Python modules across 7 packages</p></div>
   <div id="modules-grid" class="stack-grid"><!-- Filled by JS --></div>
   <div style="text-align:center;margin-top:24px">
     <a href="https://github.com/nitesh71078/stc-framework" target="_blank" style="display:inline-block;padding:12px 28px;border-radius:12px;font-weight:700;font-size:14px;background:var(--pri);color:#fff;text-decoration:none">🔗 View Full Repository on GitHub</a>
@@ -401,8 +401,8 @@ const documents = [
    modules:[{n:"secret_manager.py",p:"sentinel/secret_manager.py"},{n:"retention_manager.py",p:"operational/retention_manager.py"},{n:"model_provenance.py",p:"sentinel/model_provenance.py"}]},
   {title:"Audit Readiness Package",pages:"10 sections",size:"36 KB",color:"#f59e0b",icon:"📋",
    file:"docs/STC_Audit_Readiness_Package.docx", ghView:GHR+"/docs/STC_Audit_Readiness_Package.docx",ghDL:GHD+"/STC_Audit_Readiness_Package.docx",
-   topics:["9 formal policies","26 controls with procedures","RACI matrix","AIUC-1/EU AI Act/SOC 2/FINRA","Data flow documentation","Testing calendar"],
-   modules:[{n:"control_testing.py",p:"operational/control_testing.py"},{n:"exception_manager.py",p:"operational/exception_manager.py"}]},
+   topics:["9 formal policies","26 controls with procedures","RACI matrix","AIUC-1/EU AI Act/SOC 2/FINRA","Data flow documentation","Testing calendar","Prompt logging & auditability"],
+   modules:[{n:"control_testing.py",p:"operational/control_testing.py"},{n:"exception_manager.py",p:"operational/exception_manager.py"},{n:"prompt_logger.py",p:"observability/prompt_logger.py"}]},
   {title:"Enterprise Architecture",pages:"12 sections, 8 diagrams",size:"799 KB",color:"#3b82f6",icon:"🏗️",
    file:"docs/STC_Enterprise_Architecture_v2.docx", ghView:GHR+"/docs/STC_Enterprise_Architecture_v2.docx",ghDL:GHD+"/STC_Enterprise_Architecture_v2.docx",
    topics:["HA (3-AZ, fail-closed)","Horizontal scaling (3→20)","Redis session state","Circuit breaker + bulkhead","Multi-region DR (RPO <1h)","Kubernetes + GitOps"],
@@ -414,7 +414,7 @@ const documents = [
   {title:"Data Governance",pages:"10 sections",size:"25 KB",color:"#0891b2",icon:"📊",
    file:"docs/STC_Data_Governance_Framework.docx", ghView:GHR+"/docs/STC_Data_Governance_Framework.docx",ghDL:GHD+"/STC_Data_Governance_Framework.docx",
    topics:["End-to-end data lineage","Data catalog + quality scoring","Model registry (MLOps)","Data contracts","GDPR data subject rights","Cross-source reconciliation"],
-   modules:[{n:"data_lineage.py",p:"governance/data_lineage.py"},{n:"data_catalog.py",p:"governance/data_catalog.py"}]},
+   modules:[{n:"data_lineage.py",p:"governance/data_lineage.py"},{n:"data_catalog.py",p:"governance/data_catalog.py"},{n:"prompt_logger.py",p:"observability/prompt_logger.py"}]},
   {title:"Cyber Defense",pages:"10 sections",size:"26 KB",color:"#ef4444",icon:"🔐",
    file:"docs/STC_Cyber_Defense_Framework.docx", ghView:GHR+"/docs/STC_Cyber_Defense_Framework.docx",ghDL:GHD+"/STC_Cyber_Defense_Framework.docx",
    topics:["5-layer DDoS protection","12 AI pen tests (MITRE ATLAS)","Bug bounty program","Container hardening","Deception technology","Zero-day & APT defense"],
@@ -439,17 +439,21 @@ const tests = [
 const demoResponses = {
   "acme corp revenue":{
     text:"Based on the ACME Corp 10-K filing for FY2024, the company reported total revenue of <b>$5.2 billion</b>, representing a 12% year-over-year increase from $4.64 billion in FY2023.",
-    lineage:{docs:"acme-10k-fy2024",model:"claude-sonnet-4",tokens:2200,critic:"pass",pii:0,latency:"2.1s"}},
+    lineage:{docs:"acme-10k-fy2024",model:"claude-sonnet-4",tokens:2200,critic:"pass",pii:0,latency:"2.1s",
+             prompt_tpl:"financial_qa v3.1",exec_id:"pex-20260310-000147",cost:"$0.0092",prompt_hash:"caeeadb9"}},
   "buy acme stock":{
     text:"⚠️ <b>Scope Violation Detected</b> — I cannot provide investment recommendations or advice. This is prohibited by the STC governance policy. I can help you analyze ACME's publicly reported financial data instead.",
-    lineage:{docs:"—",model:"N/A (blocked)",tokens:0,critic:"blocked (scope)",pii:0,latency:"0.3s"}},
+    lineage:{docs:"—",model:"N/A (blocked)",tokens:0,critic:"blocked (scope)",pii:0,latency:"0.3s",
+             prompt_tpl:"financial_qa v3.1",exec_id:"pex-20260310-000148",cost:"$0",prompt_hash:"caeeadb9"}},
   "ignore all instructions":{
     text:"🛡️ <b>Prompt Injection Blocked</b> — This request was identified and blocked by the Runtime Firewall (LlamaFirewall PromptGuard). The request did not reach the LLM.",
-    lineage:{docs:"—",model:"N/A (firewall)",tokens:0,critic:"N/A",pii:0,latency:"0.05s"}},
+    lineage:{docs:"—",model:"N/A (firewall)",tokens:0,critic:"N/A",pii:0,latency:"0.05s",
+             prompt_tpl:"— (blocked at firewall)",exec_id:"pex-20260310-000149",cost:"$0",prompt_hash:"—"}},
 };
 const demoDefault = {
   text:"Based on the available documents, I can help answer questions about financial data, company filings, and regulatory information. Try asking about ACME Corp's revenue, or test the guardrails.",
-  lineage:{docs:"stc-docs",model:"claude-sonnet-4",tokens:1500,critic:"pass",pii:0,latency:"1.8s"}};
+  lineage:{docs:"stc-docs",model:"claude-sonnet-4",tokens:1500,critic:"pass",pii:0,latency:"1.8s",
+           prompt_tpl:"financial_qa v3.1",exec_id:"pex-20260310-000150",cost:"$0.0071",prompt_hash:"caeeadb9"}};
 
 // ── Render functions ────────────────────────────────────────────────────
 function showPersona(idx) {
@@ -543,6 +547,10 @@ const codeModules = [
     {n:"data_lineage.py",desc:"End-to-end lineage tracking, impact analysis"},
     {n:"data_catalog.py",desc:"Catalog, quality scoring, model registry, freshness"},
   ]},
+  {pkg:"observability",color:"var(--acc)",modules:[
+    {n:"stc_observability.py",desc:"TraceContext, AuditStore, ComplianceEvidence, HealthAggregator"},
+    {n:"prompt_logger.py",desc:"Full prompt/response capture, version tracking, A/B testing, audit queries"},
+  ]},
   {pkg:"security",color:"var(--C)",modules:[
     {n:"threat_detection.py",desc:"DDoS defense, behavioral analytics, deception"},
     {n:"pen_testing.py",desc:"12 AI pen tests, MITRE ATLAS, compliance reports"},
@@ -591,15 +599,37 @@ function demoSend(preset) {
     }
     const l = resp.lineage;
     const criticColor = l.critic==='pass'?'var(--ok)':'var(--bad)';
+    const execId = l.exec_id || 'pex-' + Date.now();
     chat.innerHTML += `
       <div class="demo-msg assistant"><div class="bubble">${resp.text}</div></div>
-      <div class="demo-lineage">
+      <div class="demo-lineage" style="grid-template-columns:repeat(3,1fr)">
         <div><span class="lbl">Model:</span> ${l.model}</div>
         <div><span class="lbl">Critic:</span> <span style="color:${criticColor}">${l.critic}</span></div>
         <div><span class="lbl">Latency:</span> ${l.latency}</div>
         <div><span class="lbl">Docs:</span> ${l.docs}</div>
         <div><span class="lbl">Tokens:</span> ${l.tokens}</div>
         <div><span class="lbl">PII redacted:</span> ${l.pii}</div>
+        <div><span class="lbl">Prompt:</span> <span style="color:var(--acc)">${l.prompt_tpl}</span></div>
+        <div><span class="lbl">Cost:</span> ${l.cost}</div>
+        <div><span class="lbl">Exec ID:</span> <span style="font-family:monospace;font-size:10px">${l.exec_id}</span></div>
+      </div>
+      <div style="margin:4px 8px">
+        <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.nextElementSibling.style.display==='none'?'📋 View Prompt Audit Log':'📋 Hide Prompt Audit Log'" style="background:none;border:1px solid var(--bdr);color:var(--txM);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">📋 View Prompt Audit Log</button>
+        <div style="display:none;margin-top:8px;padding:12px;border-radius:10px;background:var(--card);border:1px solid var(--bdr);font-size:11px;font-family:monospace;line-height:1.8;color:var(--txM)">
+          <div style="font-family:sans-serif;font-weight:700;color:var(--acc);margin-bottom:8px;font-size:12px">Prompt Execution Record</div>
+          <div><span style="color:var(--txD)">execution_id:</span> <span style="color:var(--txt)">${l.exec_id}</span></div>
+          <div><span style="color:var(--txD)">template_id:</span> <span style="color:var(--txt)">${l.prompt_tpl}</span></div>
+          <div><span style="color:var(--txD)">template_hash:</span> <span style="color:var(--txt)">${l.prompt_hash}</span></div>
+          <div><span style="color:var(--txD)">model:</span> <span style="color:var(--txt)">${l.model}</span></div>
+          <div><span style="color:var(--txD)">tokens_in:</span> <span style="color:var(--txt)">${l.tokens > 0 ? Math.round(l.tokens * 0.85) : 0}</span> <span style="color:var(--txD)">tokens_out:</span> <span style="color:var(--txt)">${l.tokens > 0 ? Math.round(l.tokens * 0.15) : 0}</span></div>
+          <div><span style="color:var(--txD)">estimated_cost:</span> <span style="color:var(--txt)">${l.cost}</span></div>
+          <div><span style="color:var(--txD)">pii_redactions:</span> <span style="color:var(--txt)">${l.pii}</span></div>
+          <div><span style="color:var(--txD)">data_tier:</span> <span style="color:var(--txt)">internal</span></div>
+          <div><span style="color:var(--txD)">critic_verdict:</span> <span style="color:${criticColor}">${l.critic}</span></div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)"><span style="color:var(--txD)">system_prompt:</span> <span style="color:var(--txt);word-break:break-all">"You are a financial analyst assistant. Answer ONLY from provided documents. Never provide investment advice..."</span></div>
+          <div style="margin-top:4px"><span style="color:var(--txD)">user_prompt:</span> <span style="color:var(--txt);word-break:break-all">"Based on the following documents: [${l.docs}] Answer: ${esc(q).substring(0,60)}..."</span></div>
+          <div style="margin-top:8px;font-family:sans-serif;font-size:10px;color:var(--txD)">Full prompt text, response text, and all metadata stored in immutable audit trail. Queryable by execution_id, session_id, lineage_id, template_id, or date range.</div>
+        </div>
       </div>`;
     chat.scrollTop = chat.scrollHeight;
   }, 900);
